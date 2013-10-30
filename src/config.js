@@ -18,7 +18,7 @@ exports.defaults = function() {
 };
 
 exports.placeholder = function() {
-  var ph = "  # jshint:                    # settings for javascript hinting\n" +
+  var ph = "\n  # jshint:                    # settings for javascript hinting\n" +
      "    # exclude:[]               # array of strings or regexes that match files to not jshint,\n" +
      "                               # strings are paths that can be relative to the watch.sourceDir\n" +
      "                               # or absolute\n" +
@@ -31,7 +31,7 @@ exports.placeholder = function() {
      "                               # be present. If it is present, it must be valid JSON.\n" +
      "    # rules:                   # Settings: http://www.jshint.com/options/, these settings will\n" +
      "                               # override any settings set up in the jshintrc\n" +
-     "      # plusplus: true         # This is an example override, this is not a default\n\n";
+     "      # plusplus: true         # This is an example override, this is not a default\n";
   return ph;
 };
 
