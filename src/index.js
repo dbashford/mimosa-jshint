@@ -59,7 +59,13 @@ var _lint = function (config, options, next) {
         } else if (options.isJavascript && !options.isCopy && !config.jshint.compiled) {
           logger.debug("Not linting compiled script [[ " + fileName + "]]");
         } else {
-          var lintok = jslint(outputText, rules);
+          var globals;
+
+          if (rules.globals) {
+            globals = rules.globals;
+            delete rules.globals;
+          }
+          var lintok = jslint(outputText, rules, globals);
           if (!lintok) {
             jslint.errors.forEach(function(e) {
               if (e) {
