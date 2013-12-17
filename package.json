@@ -1,6 +1,6 @@
 {
   "name": "mimosa-jshint",
-  "version": "1.0.0",
+  "version": "1.0.2",
   "homepage": "http://www.mimosa.io",
   "author": "David Bashford",
   "description": "A JSHint module for Mimosa",
@@ -8,6 +8,10 @@
     {
       "name": "David Bashford",
       "email": "dbashford@hotmail.com"
+    },
+    {
+      "name": "William Riancho",
+      "email": "wr.wllm@gmail.com"
     }
   ],
   "repository": {
