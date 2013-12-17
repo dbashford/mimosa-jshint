@@ -34,8 +34,6 @@ var _lint = function (config, options, next) {
     return next();
   }
 
-  var rules = _.extend({}, defaultOptions[options.extension], lintOptions);
-
   options.files.forEach( function(file, i) {
     var outputText = file.outputFileText,
         fileName = file.inputFileName;
@@ -59,7 +57,15 @@ var _lint = function (config, options, next) {
         } else if (options.isJavascript && !options.isCopy && !config.jshint.compiled) {
           logger.debug("Not linting compiled script [[ " + fileName + "]]");
         } else {
-          var lintok = jslint(outputText, rules);
+          var rules = _.extend({}, defaultOptions[options.extension], lintOptions),
+              globals;
+
+          if (rules.globals) {
+            globals = rules.globals;
+            delete rules.globals;
+          }
+
+          var lintok = jslint(outputText, rules, globals);
           if (!lintok) {
             jslint.errors.forEach(function(e) {
               if (e) {
