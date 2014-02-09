@@ -2,7 +2,7 @@
 
 var jslint = require('jshint').JSHINT,
     _ = require("lodash"),
-    logger = require("logmimosa"),
+    logger = null,
     config = require('./config'),
     defaultOptions = {
       coffee: {
@@ -84,6 +84,7 @@ var _lint = function (config, options, next) {
 };
 
 var registration = function (config, register) {
+  logger = config.log;
   var extensions = null;
 
   if (config.jshint.vendor) {

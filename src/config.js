@@ -1,7 +1,6 @@
 "use strict";
 
-var logger = require("logmimosa"),
-    path = require("path"),
+var path = require("path"),
     fs = require("fs");
 
 exports.defaults = function() {
@@ -47,7 +46,7 @@ var _checkHintRcPath = function (hintrcPath, config) {
     hintrcPath = path.join(path.dirname(hintrcPath), '..', '.jshintrc');
     var dirname = path.dirname(hintrcPath);
     if (dirname.indexOf(path.sep) === dirname.lastIndexOf(path.sep)) {
-      logger.debug("Unable to find .jshintrc");
+      config.log.debug("Unable to find [[ .jshintrc ]]");
       return null;
     }
     _checkHintRcPath(hintrcPath, config);
