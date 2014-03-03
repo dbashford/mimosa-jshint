@@ -1,6 +1,6 @@
 {
   "name": "mimosa-jshint",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "homepage": "http://www.mimosa.io",
   "author": "David Bashford",
   "description": "A JSHint module for Mimosa",
@@ -26,7 +26,7 @@
     "lint"
   ],
   "dependencies": {
-    "jshint": "2.4.3",
+    "jshint": "2.4.4",
     "lodash": "2.4.1"
   },
   "main": "./src/index",

@@ -1,9 +1,9 @@
 "use strict";
 
-var jslint = require('jshint').JSHINT,
+var jslint = require("jshint").JSHINT,
     _ = require("lodash"),
     logger = null,
-    config = require('./config'),
+    config = require("./config"),
     defaultOptions = {
       coffee: {
         boss: true,
@@ -95,10 +95,10 @@ var registration = function (config, register) {
     extensions = config.extensions.javascript;
   } else if (config.jshint.copied) {
     logger.debug("Linting copied JavaScript only");
-    extensions = ['js'];
+    extensions = ["js"];
   } else if (config.jshint.compiled) {
     logger.debug("Linting compiled JavaScript only");
-    extensions = config.extensions.javascript.filter(function (ext) { return ext !== 'js'; } );
+    extensions = config.extensions.javascript.filter(function (ext) { return ext !== "js"; } );
   } else {
     logger.debug("JavaScript linting is entirely turned off");
     extensions = [];
@@ -114,7 +114,7 @@ var registration = function (config, register) {
     lintOptions = config.jshint.rules;
   }
 
-  register(['buildFile','add','update'], 'afterCompile', _lint, extensions);
+  register(["buildFile","add","update"], "afterCompile", _lint, extensions);
 };
 
 module.exports = {
