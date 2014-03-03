@@ -77,7 +77,7 @@ var _lint = function (config, options, next) {
       }
     }
 
-    if (i === options.files.length-1) {
+    if (i === options.files.length - 1) {
       next();
     }
   });
