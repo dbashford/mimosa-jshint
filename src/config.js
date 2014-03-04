@@ -37,7 +37,7 @@ exports.placeholder = function() {
 
 var _checkHintRcPath = function (hintrcPath, config) {
   if (fs.existsSync(hintrcPath)) {
-    var hintText = fs.readFileSync(hintrcPath);
+    var hintText = fs.readFileSync(hintrcPath, "utf8");
     try {
       config.jshint.rcRules = JSON.parse(stripJsonComments(hintText));
     } catch (err) {

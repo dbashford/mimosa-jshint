@@ -28,7 +28,7 @@ var _log = function (fileName, message, lineNumber) {
   logger.warn(message);
 };
 
-var _lint = function (config, options, next) {
+var _lint = function (mimosaConfig, options, next) {
   var hasFiles = options.files && options.files.length > 0;
   if (!hasFiles) {
     return next();
@@ -41,20 +41,20 @@ var _lint = function (config, options, next) {
     if (outputText && outputText.length > 0) {
       var doit = true;
 
-      if (config.jshint.exclude && config.jshint.exclude.indexOf(fileName) !== -1) {
+      if (mimosaConfig.jshint.exclude && mimosaConfig.jshint.exclude.indexOf(fileName) !== -1) {
         doit = false;
       }
 
-      if (config.jshint.excludeRegex && fileName.match(config.jshint.excludeRegex)) {
+      if (mimosaConfig.jshint.excludeRegex && fileName.match(mimosaConfig.jshint.excludeRegex)) {
         doit = false;
       }
 
       if (doit) {
-        if (options.isCopy && !options.isVendor && !config.jshint.copied) {
+        if (options.isCopy && !options.isVendor && !mimosaConfig.jshint.copied) {
           logger.debug("Not linting copied script [[" + fileName + " ]]");
-        } else if (options.isVendor && !config.jshint.vendor) {
+        } else if (options.isVendor && !mimosaConfig.jshint.vendor) {
           logger.debug("Not linting vendor script [[ " + fileName + " ]]");
-        } else if (options.isJavascript && !options.isCopy && !config.jshint.compiled) {
+        } else if (options.isJavascript && !options.isCopy && !mimosaConfig.jshint.compiled) {
           logger.debug("Not linting compiled script [[ " + fileName + "]]");
         } else {
           var rules = _.extend({}, defaultOptions[options.extension], lintOptions),
@@ -83,22 +83,22 @@ var _lint = function (config, options, next) {
   });
 };
 
-var registration = function (config, register) {
-  logger = config.log;
+var registration = function (mimosaConfig, register) {
+  logger = mimosaConfig.log;
   var extensions = null;
 
-  if (config.jshint.vendor) {
+  if (mimosaConfig.jshint.vendor) {
     logger.debug("vendor being linted, so everything needs to pass through linting");
-    extensions = config.extensions.javascript;
-  } else if (config.jshint.copied && config.jshint.compiled) {
+    extensions = mimosaConfig.extensions.javascript;
+  } else if (mimosaConfig.jshint.copied && mimosaConfig.jshint.compiled) {
     logger.debug("Linting compiled/copied JavaScript only");
-    extensions = config.extensions.javascript;
-  } else if (config.jshint.copied) {
+    extensions = mimosaConfig.extensions.javascript;
+  } else if (mimosaConfig.jshint.copied) {
     logger.debug("Linting copied JavaScript only");
     extensions = ["js"];
-  } else if (config.jshint.compiled) {
+  } else if (mimosaConfig.jshint.compiled) {
     logger.debug("Linting compiled JavaScript only");
-    extensions = config.extensions.javascript.filter(function (ext) { return ext !== "js"; } );
+    extensions = mimosaConfig.extensions.javascript.filter(function (ext) { return ext !== "js"; } );
   } else {
     logger.debug("JavaScript linting is entirely turned off");
     extensions = [];
@@ -108,10 +108,10 @@ var registration = function (config, register) {
     return;
   }
 
-  if (config.jshint.rcRules) {
-    lintOptions = _.extend({}, config.jshint.rcRules, config.jshint.rules);
+  if (mimosaConfig.jshint.rcRules) {
+    lintOptions = _.extend({}, mimosaConfig.jshint.rcRules, mimosaConfig.jshint.rules);
   } else {
-    lintOptions = config.jshint.rules;
+    lintOptions = mimosaConfig.jshint.rules;
   }
 
   register(["buildFile","add","update"], "afterCompile", _lint, extensions);
