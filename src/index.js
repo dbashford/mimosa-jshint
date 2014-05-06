@@ -1,7 +1,7 @@
 "use strict";
 
-var jslint = require("jshint").JSHINT,
-    _ = require("lodash"),
+var _ = require("lodash"),
+    jslint = null,
     logger = null,
     config = require("./config"),
     defaultOptions = {
@@ -29,7 +29,7 @@ var _log = function (fileName, message, lineNumber) {
 };
 
 var _lint = function (mimosaConfig, options, next) {
-  var hasFiles = options.files && options.files.length > 0;
+  var hasFiles = options.files && options.files.length;
   if (!hasFiles) {
     return next();
   }
@@ -63,6 +63,10 @@ var _lint = function (mimosaConfig, options, next) {
           if (rules.globals) {
             globals = rules.globals;
             delete rules.globals;
+          }
+
+          if ( !jslint ) {
+            jslint = require("jshint").JSHINT;
           }
 
           var lintok = jslint(outputText, rules, globals);

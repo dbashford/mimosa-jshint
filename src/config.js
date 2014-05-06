@@ -1,8 +1,7 @@
 "use strict";
 
 var path = require("path")
-  , fs = require("fs")
-  , stripJsonComments = require("strip-json-comments");
+  , fs = require("fs");
 
 exports.defaults = function() {
   return {
@@ -39,6 +38,7 @@ var _checkHintRcPath = function (hintrcPath, config) {
   if (fs.existsSync(hintrcPath)) {
     var hintText = fs.readFileSync(hintrcPath, "utf8");
     try {
+      var stripJsonComments = require( "strip-json-comments" );
       config.jshint.rcRules = JSON.parse(stripJsonComments(hintText));
     } catch (err) {
       throw "Cannot parse jshintrc file at [[ " + hintrcPath + " ]], " + err;
