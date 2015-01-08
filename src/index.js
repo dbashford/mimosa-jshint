@@ -36,47 +36,52 @@ var _lint = function (mimosaConfig, options, next) {
 
   options.files.forEach( function(file, i) {
     var outputText = file.outputFileText,
-        fileName = file.inputFileName;
+        fileName = file.inputFileName,
+        j = mimosaConfig.jshint;
 
     if (outputText && outputText.length > 0) {
-      var doit = true;
 
-      if (mimosaConfig.jshint.exclude && mimosaConfig.jshint.exclude.indexOf(fileName) !== -1) {
-        doit = false;
-      }
+      // excluded via string path?
+      if (j.exclude && j.exclude.indexOf(fileName) !== -1) {
+        logger.debug("Not linting js [[" + fileName + " ]], excluded via path");
 
-      if (mimosaConfig.jshint.excludeRegex && fileName.match(mimosaConfig.jshint.excludeRegex)) {
-        doit = false;
-      }
+      // excluded via regex?
+      } else if (j.excludeRegex && fileName.match(j.excludeRegex)) {
+        logger.debug("Not linting css [[" + fileName + " ]], excluded via regex");
 
-      if (doit) {
-        if (options.isCopy && !options.isVendor && !mimosaConfig.jshint.copied) {
-          logger.debug("Not linting copied script [[" + fileName + " ]]");
-        } else if (options.isVendor && !mimosaConfig.jshint.vendor) {
-          logger.debug("Not linting vendor script [[ " + fileName + " ]]");
-        } else if (options.isJavascript && !options.isCopy && !mimosaConfig.jshint.compiled) {
-          logger.debug("Not linting compiled script [[ " + fileName + "]]");
-        } else {
-          var rules = _.extend({}, defaultOptions[options.extension], lintOptions),
-              globals;
+      // excluded because not linting copied assets?
+      } else if (options.isCopy && !options.isVendor && !j.copied) {
+        logger.debug("Not linting copied script [[" + fileName + " ]]");
 
-          if (rules.globals) {
-            globals = rules.globals;
-            delete rules.globals;
-          }
+      // excluded because not linting vendor assets?
+      } else if (options.isVendor && !j.vendor) {
+        logger.debug("Not linting vendor script [[ " + fileName + " ]]");
 
-          if ( !jslint ) {
-            jslint = require("jshint").JSHINT;
-          }
+      // excluded because not linting compiled assets?
+      } else if (options.isJavascript && !options.isCopy && !j.compiled) {
+        logger.debug("Not linting compiled script [[ " + fileName + "]]");
 
-          var lintok = jslint(outputText, rules, globals);
-          if (!lintok) {
-            jslint.errors.forEach(function(e) {
-              if (e) {
-                _log(fileName, e.reason, e.line);
-              }
-            });
-          }
+      // linting!
+      } else {
+        var rules = _.extend({}, defaultOptions[options.extension], lintOptions),
+            globals;
+
+        if (rules.globals) {
+          globals = rules.globals;
+          delete rules.globals;
+        }
+
+        if ( !jslint ) {
+          jslint = require("jshint").JSHINT;
+        }
+
+        var lintok = jslint(outputText, rules, globals);
+        if (!lintok) {
+          jslint.errors.forEach(function(e) {
+            if (e) {
+              _log(fileName, e.reason, e.line);
+            }
+          });
         }
       }
     }
@@ -89,36 +94,48 @@ var _lint = function (mimosaConfig, options, next) {
 
 var registration = function (mimosaConfig, register) {
   logger = mimosaConfig.log;
-  var extensions = null;
+  var extensions = null
+    , j = mimosaConfig.jshint
+    , jsExts = mimosaConfig.extensions.javascript;
 
-  if (mimosaConfig.jshint.vendor) {
-    logger.debug("vendor being linted, so everything needs to pass through linting");
-    extensions = mimosaConfig.extensions.javascript;
-  } else if (mimosaConfig.jshint.copied && mimosaConfig.jshint.compiled) {
-    logger.debug("Linting compiled/copied JavaScript only");
-    extensions = mimosaConfig.extensions.javascript;
-  } else if (mimosaConfig.jshint.copied) {
-    logger.debug("Linting copied JavaScript only");
+  // vendor being linted, so everything needs to pass through linting
+  if (j.vendor) {
+    extensions = jsExts;
+
+  // Linting compiled/copied JavaScript only
+  } else if (j.copied && j.compiled) {
+    extensions = jsExts;
+
+  // Linting copied JavaScript only
+  } else if (j.copied) {
     extensions = ["js"];
-  } else if (mimosaConfig.jshint.compiled) {
-    logger.debug("Linting compiled JavaScript only");
-    extensions = mimosaConfig.extensions.javascript.filter(function (ext) { return ext !== "js"; } );
+
+  // Linting compiled JavaScript only
+  } else if (j.compiled) {
+    extensions = jsExts.filter(function (ext) {
+      return ext !== "js";
+    });
+
+  // JavaScript linting is entirely turned off
   } else {
-    logger.debug("JavaScript linting is entirely turned off");
     extensions = [];
   }
 
-  if (extensions.length === 0) {
+  if (!extensions.length) {
     return;
   }
 
-  if (mimosaConfig.jshint.rcRules) {
-    lintOptions = _.extend({}, mimosaConfig.jshint.rcRules, mimosaConfig.jshint.rules);
+  if (j.rcRules) {
+    lintOptions = _.extend({}, j.rcRules, j.rules);
   } else {
-    lintOptions = mimosaConfig.jshint.rules;
+    lintOptions = j.rules;
   }
 
-  register(["buildFile","add","update"], "afterCompile", _lint, extensions);
+  register(
+    ["buildFile", "add", "update"],
+    "afterCompile",
+    _lint,
+    extensions);
 };
 
 module.exports = {
