@@ -35,11 +35,11 @@ var _lint = function (mimosaConfig, options, next) {
   }
 
   options.files.forEach( function(file, i) {
-    var outputText = file.outputFileText,
-        fileName = file.inputFileName,
-        j = mimosaConfig.jshint;
+    var j = mimosaConfig.jshint,
+        text = j.textToProcess(file),
+        fileName = file.inputFileName;
 
-    if (outputText && outputText.length > 0) {
+    if (text && text.length > 0) {
 
       // excluded via string path?
       if (j.exclude && j.exclude.indexOf(fileName) !== -1) {
@@ -75,7 +75,7 @@ var _lint = function (mimosaConfig, options, next) {
           jslint = require("jshint").JSHINT;
         }
 
-        var lintok = jslint(outputText, rules, globals);
+        var lintok = jslint(text, rules, globals);
         if (!lintok) {
           jslint.errors.forEach(function(e) {
             if (e) {
@@ -133,7 +133,7 @@ var registration = function (mimosaConfig, register) {
 
   register(
     ["buildFile", "add", "update"],
-    "afterCompile",
+    j.workflowStep,
     _lint,
     extensions);
 };

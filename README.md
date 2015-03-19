@@ -22,6 +22,7 @@ jshint: {
   compiled: true,
   copied: true,
   vendor: false,
+  executeAfterCompile: true,
   rules: {},
   jshintrc: ".jshintrc"  
 }
@@ -38,6 +39,9 @@ When this property is set to `true`, copied JS will be jshinted.
 
 #### `jshint.vendor` boolean
 When this property is set to `true`, vendor JS will be jshinted. What files are vendor is determined by Mimosa core. Mimosa has a [`vendor`](http://mimosa.io/configuration.html#vendor) setting which indicates where vendor files are located.
+
+#### `executeAfterCompile` boolean
+Determines whether JSHint runs on code before or after it is compiled. This defaults to `true` which means that JSHint runs on compiled code. So, for instance, it would not run on CoffeeScript, instead it would run on the compiled JavaScript. You may find you want to run on pre-compiled code. Some compilers, like [Babel](http://www.babeljs.io) will transform the style of the code when it compiles it. If running on the compiled output of Babel, JSHint will have many problems that cannot be avoided.
 
 #### `jshint.rules` object
 If you disagree with any of the jshint settings, or want to turn some of the rules off, add [overrides](http://jshint.com/docs/options/) as key/value pairs underneath this property.

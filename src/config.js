@@ -10,6 +10,7 @@ exports.defaults = function() {
       compiled: true,
       copied: true,
       vendor: false,
+      executeAfterCompile: true,
       jshintrc: ".jshintrc",
       rules: {}
     }
@@ -46,6 +47,23 @@ exports.validate = function (config, validators) {
     ["compiled", "copied", "vendor"].forEach( function(type) {
       validators.ifExistsIsBoolean(errors, "jshint." + type, config.jshint[type]);
     });
+
+    if (validators.ifExistsIsBoolean(errors, "jshint.executeAfterCompile", config.jscs.executeAfterCompile)) {
+
+      // Determine what step to run JSHint at and what text to run it on. Create specific function
+      // to return value rather than run if stmt on flag for each file.
+      if (config.jshint.executeAfterCompile) {
+        config.jshint.workflowStep = "afterCompile";
+        config.jshint.textToProcess = function(file) {
+          return file.outputFileText;
+        };
+      } else {
+        config.jshint.workflowStep = "beforeCompile";
+        config.jshint.textToProcess = function(file) {
+          return file.inputFileText;
+        };
+      }
+    }
 
     if (config.jshint.jshintrc && validators.isString(errors, "jshint.jshintrc", config.jshint.jshintrc)) {
       var hintrcPath = validators.determinePath(config.jshint.jshintrc, config.root);
