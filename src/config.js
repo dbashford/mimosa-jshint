@@ -48,7 +48,7 @@ exports.validate = function (config, validators) {
       validators.ifExistsIsBoolean(errors, "jshint." + type, config.jshint[type]);
     });
 
-    if (validators.ifExistsIsBoolean(errors, "jshint.executeAfterCompile", config.jscs.executeAfterCompile)) {
+    if (validators.ifExistsIsBoolean(errors, "jshint.executeAfterCompile", config.jshint.executeAfterCompile)) {
 
       // Determine what step to run JSHint at and what text to run it on. Create specific function
       // to return value rather than run if stmt on flag for each file.
