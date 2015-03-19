@@ -16,24 +16,6 @@ exports.defaults = function() {
   };
 };
 
-exports.placeholder = function() {
-  var ph = "\n  jshint:                  # settings for javascript hinting\n" +
-     "    exclude:[]               # array of strings or regexes that match files to not jshint,\n" +
-     "                             # strings are paths that can be relative to the watch.sourceDir\n" +
-     "                             # or absolute\n" +
-     "    compiled: true           # fire jshint on successful compile of meta-language to javascript\n" +
-     "    copied: true             # fire jshint for copied javascript files\n" +
-     "    vendor: false            # fire jshint for copied vendor javascript files (like jquery)\n" +
-     "    jshintrc: \".jshintrc\"  # This is the path, either relative to the root of the project or\n" +
-     "                             # absolute, to a .jshintrc file. By default mimosa will look at\n" +
-     "                             # the root of the project for this file. The file does not need to\n" +
-     "                             # be present. If it is present, it must be valid JSON.\n" +
-     "    rules:                   # Settings: http://www.jshint.com/options/, these settings will\n" +
-     "                             # override any settings set up in the jshintrc\n" +
-     "      plusplus: true         # This is an example override, this is not a default\n";
-  return ph;
-};
-
 var _checkHintRcPath = function (hintrcPath, config) {
   if (fs.existsSync(hintrcPath)) {
     var hintText = fs.readFileSync(hintrcPath, "utf8");
